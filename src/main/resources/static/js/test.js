@@ -22,39 +22,42 @@ function processData(test) {
   });
 
   const dataKeys = Object.keys(data);
-  const tags = [];
+  const tagIds = [];
 
   const graphData = {
     nodes:[],
     edges:[]
   };
 
-  dataKeys.forEach(function(key){
-    graphData.nodes.push({
-      id: key,
-      label: key,
-      size: 5,
-      color: '#00838F',
-      x:Math.random(),
-      y:Math.random(),
-    });
-    data[key].forEach(function(tag){
-      if(!tags.includes(tag)){
+  dataKeys.forEach(function(key){       //добавление вершин слева
+    if(!tagIds.includes(key)){            //если их не было еще
         graphData.nodes.push({
-          id: 'tag'+tag,
+          id: key,
+          label: key,
+          size: 5,
+          color: '#00838F',
+          x:Math.random(),
+          y:Math.random(),
+        });
+        tagIds.push(key);
+    }
+    data[key].forEach(function(tag){       //добавление вершин справа
+      if(!tagIds.includes(tag)){             //если их не было еще
+        graphData.nodes.push({
+          id: tag,
           label: tag,
           size: 8,
           color: '#00695C',
           x:Math.random(),
           y:Math.random()
         });
-        tags.push(tag);
+        tagIds.push(tag);
       }
-      graphData.edges.push({
+      graphData.edges.push({ //добавление связей
         id: key+tag,
         source: key,
         size: 12,
-        target: 'tag'+tag,
+        target: tag,
         color: '#ccc',
         hover_color: '#000'
       });
@@ -104,50 +107,51 @@ if(edgeLabels != null ) {
 
 $(document).ready(function(){
 
-graph = new sigma({
-  renderer: {
-    container: document.getElementById('graph-container'),
-    type: 'canvas'
-  },
-  settings: {
-    doubleClickEnabled: false,
-    minEdgeSize: 0.5,
-    maxEdgeSize: 4,
-    enableEdgeHovering: true,
-    edgeHoverColor: 'edge',
-    defaultEdgeHoverColor: '#000',
-    edgeHoverSizeRatio: 1,
-    edgeHoverExtremities: true
-  }
-});
+    graph = new sigma({
+      renderer: {
+        container: document.getElementById('graph-container'),
+        type: 'canvas'
+      },
+      settings: {
+        doubleClickEnabled: false,
+        minEdgeSize: 0.5,
+        maxEdgeSize: 4,
+        enableEdgeHovering: true,
+        edgeHoverColor: 'edge',
+        defaultEdgeHoverColor: '#000',
+        edgeHoverSizeRatio: 1,
+        edgeHoverExtremities: true,
+        labelThreshold:0
+      }
+    });
+    var dragListener = sigma.plugins.dragNodes(graph, graph.renderers[0]);
 
-graph.bind('doubleClickEdge', function(e) {
-  console.log(e.data.edge.id);
-    processData(e.data.edge.id);
-});
-
-//  graph = new sigma('container');
-  processData();
-
-  let timeout;
-  $('#input').on('input', function(){
-    clearTimeout(timeout);
-    timeout = setTimeout(function(){
+    //  graph = new sigma('container');
       processData();
-    }, 500);
-  });
 
-  graph.bind('doubleClickEdge', function(e) {
-    console.log(e.data.edge.id);
-    selectedEdgeId = e.data.edge.id;
-  });
+      let timeout;
+      $('#input').on('input', function(){
+        clearTimeout(timeout);
+        timeout = setTimeout(function(){
+          processData();
+        }, 500);
+      });
 
-$("input[type=button]").click(function() {
-   console.log($('#inputEdge').val());
-   edgeLabels[selectedEdgeId] = $('#inputEdge').val();
-   console.log(Object.keys(edgeLabels));
-   console.log(Object.values(edgeLabels));
-});
+      graph.bind('doubleClickEdge', function(e) {
+        console.log(e.data.edge.id);
+        selectedEdgeId = e.data.edge.id;
+      });
+
+    $('#subButton').click(function() {
+       console.log($('#inputEdge').val());
+       edgeLabels[selectedEdgeId] = $('#inputEdge').val();
+       console.log(Object.keys(edgeLabels));
+       console.log(Object.values(edgeLabels));
+    });
+
+    $('#jsonButton').click(function() {
+       console.log(JSON.stringify({nodes: graph.graph.nodes(), edges: graph.graph.edges()}));
+    });
 
 });
 

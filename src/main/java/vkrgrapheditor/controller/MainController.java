@@ -11,14 +11,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class MainController {
     private final Logger log = LoggerFactory.getLogger(MainController.class);
 
-    @RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
-    public String index() {
+    @RequestMapping(value = { "/", "/index2" }, method = RequestMethod.GET)
+    public String index2() {
         return "html/index2";
     }
 
-    @RequestMapping("/offerView")
-    public String page(){
-        return "html/new";
+    @RequestMapping(value = { "/index" }, method = RequestMethod.GET)
+    public String index() {
+        return "html/index";
     }
-
 }
