@@ -34,7 +34,7 @@ function processData(test) {
         graphData.nodes.push({
           id: key,
           label: key,
-          size: 5,
+          size: 10,
           color: '#00838F',
           x:Math.random(),
           y:Math.random(),
@@ -46,21 +46,33 @@ function processData(test) {
         graphData.nodes.push({
           id: tag,
           label: tag,
-          size: 8,
+          size: 10,
           color: '#00695C',
           x:Math.random(),
           y:Math.random()
         });
         tagIds.push(tag);
       }
-      graphData.edges.push({ //добавление связей
-        id: key+tag,
-        source: key,
-        size: 12,
-        target: tag,
-        color: '#ccc',
-        hover_color: '#000'
-      });
+      if(key === tag) {
+          graphData.edges.push({ //добавление связей
+          id: key+tag,
+          source: key,
+          size: 12,
+          target: tag,
+          color: '#ccc',
+          hover_color: '#000',
+          type: 'curve'
+        });
+      } else {
+          graphData.edges.push({ //добавление связей
+          id: key+tag,
+          source: key,
+          size: 12,
+          target: tag,
+          color: '#ccc',
+          hover_color: '#000'
+        });
+      }
     });
   });
 
@@ -121,7 +133,10 @@ $(document).ready(function(){
         defaultEdgeHoverColor: '#000',
         edgeHoverSizeRatio: 1,
         edgeHoverExtremities: true,
-        labelThreshold:0
+        labelThreshold:0,
+        edgeLabelSize: 'fixed',
+        defaultEdgeLabelSize: 17,
+        defaultLabelSize: 19
       }
     });
     var dragListener = sigma.plugins.dragNodes(graph, graph.renderers[0]);
@@ -150,8 +165,23 @@ $(document).ready(function(){
     });
 
     $('#jsonButton').click(function() {
-       console.log(JSON.stringify({nodes: graph.graph.nodes(), edges: graph.graph.edges()}));
+//       console.log(JSON.stringify({nodes: graph.graph.nodes(), edges: graph.graph.edges()}));
+        some();
     });
+
+    async function some() {
+      let response = await fetch('/savejson', {
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json;charset=utf-8'
+       },
+       body: JSON.stringify({nodes: graph.graph.nodes(), edges: graph.graph.edges()})
+         });
+
+         let result = await response.json();
+//         alert(result.toString());
+        console.log(result);
+    }
 
 });
 
