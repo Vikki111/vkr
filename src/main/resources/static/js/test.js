@@ -4,7 +4,13 @@ let atlasTimeout;
 
 let edgeLabels = {};
 
+let greenNodeIds = {};
+
+let redNodeIds = {};
+
 let selectedEdgeId;
+
+var nId = 0;
 
 function processData(test) {
 
@@ -86,7 +92,7 @@ if(edgeLabels != null ) {
 }
 
 
-  graph.graph.clear().read(graphData);
+//  graph.graph.clear().read(graphData);
 
 //  graph.settings({
 //    edgeColor: 'default',
@@ -94,12 +100,12 @@ if(edgeLabels != null ) {
 //    labelThreshold:0
 //  });
 
-  graph.camera.goTo({
-    x:0,
-    y:0,
-    ratio:1.1,
-    angle:0
-  });
+//  graph.camera.goTo({
+//    x:0,
+//    y:0,
+//    ratio:1.1,
+//    angle:0
+//  });
 
   if(dataKeys.length){
     graph.startForceAtlas2({
@@ -128,6 +134,7 @@ $(document).ready(function(){
         doubleClickEnabled: false,
         minEdgeSize: 0.5,
         maxEdgeSize: 4,
+        maxNodeSize: 16,
         enableEdgeHovering: true,
         edgeHoverColor: 'edge',
         defaultEdgeHoverColor: '#000',
@@ -135,8 +142,8 @@ $(document).ready(function(){
         edgeHoverExtremities: true,
         labelThreshold:0,
         edgeLabelSize: 'fixed',
-        defaultEdgeLabelSize: 17,
-        defaultLabelSize: 19
+        defaultEdgeLabelSize: 18,
+        defaultLabelSize: 20
       }
     });
     var dragListener = sigma.plugins.dragNodes(graph, graph.renderers[0]);
@@ -156,6 +163,53 @@ $(document).ready(function(){
         console.log(e.data.edge.id);
         selectedEdgeId = e.data.edge.id;
       });
+
+      graph.bind('clickNode', function(e){
+          console.log(e.data.node.id);
+          if (e.data.node.isSelected) {
+              e.data.node.color = "#000";
+              e.data.node.isSelected = false;
+            } else {
+              e.data.node.color = "#0A0"; //зеленый
+              e.data.node.isSelected = true;
+              greenNodeIds[0] = e.data.node.id;
+            }
+            graph.refresh();
+      });
+
+      graph.bind('rightClickNode', function(e){
+            console.log(e.data.node.id);
+            if (e.data.node.isSelected) {
+                e.data.node.color = "#000";
+                e.data.node.isSelected = false;
+                if(redNodeIds[0] == e.data.node.id) {
+                    redNodeIds[0] = null;
+                }
+              } else {
+                e.data.node.color = "#f00"; //красный
+                e.data.node.isSelected = true;
+                if(redNodeIds[0] == null) {
+                    redNodeIds[0] = e.data.node.id;
+                } else {
+                    graph.graph.addEdge({ //добавление связей
+                      id: redNodeIds[0]+""+e.data.node.id,
+                      source: redNodeIds[0],
+                      size: 12,
+                      target: e.data.node.id,
+                      color: '#ccc',
+                      hover_color: '#000'
+                    });
+                    graph.graph.nodes().forEach(function(node) {
+                        if(node.id == e.data.node.id || node.id == redNodeIds[0]) {
+                            node.color = '#000';
+                            node.isSelected = false;
+                        }
+                     });
+                    redNodeIds[0]= null;
+                }
+              }
+              graph.refresh();
+        });
 
     $('#subButton').click(function() {
        console.log($('#inputEdge').val());
@@ -182,6 +236,47 @@ $(document).ready(function(){
 //         alert(result.toString());
         console.log(result);
     }
+
+    var dom = document.querySelector('#graph-container canvas:last-child');
+
+    dom.addEventListener('contextmenu', event => event.preventDefault());
+
+      dom.addEventListener('dblclick', function(e) {
+
+          var x,
+              y,
+              p,
+              id,
+              neighbors;
+
+         x = sigma.utils.getX(e) - dom.offsetWidth / 2;
+         y = sigma.utils.getY(e) - dom.offsetHeight / 2;
+
+     p = graph.camera.cameraPosition(x, y);
+        x = p.x;
+        y = p.y;
+        var test = ++nId;
+
+            graph.graph.addNode({
+              id: test,
+              size: 50,
+              label: test + "",
+              x: x + Math.random() / 10,
+              y: y + Math.random() / 10,
+              dX: 0,
+              dY: 0,
+            });
+            graph.refresh();
+        }, false);
+
+
+        $('html').keyup(function(e){
+            if(e.keyCode == 46) {
+                //greenNodeIds[0]
+                graph.graph.dropNode(greenNodeIds[0]);
+                graph.refresh();
+            }
+        });
 
 });
 
