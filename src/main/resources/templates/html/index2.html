@@ -62,10 +62,10 @@
 <!--    <script src="js/plugins/sigma.renderers.edgeLabels/sigma.canvas.edges.labels.curve.js"></script>-->
 <!--    <script src="js/plugins/sigma.renderers.edgeLabels/sigma.canvas.edges.labels.curvedArrow.js"></script>-->
 <!--    <script src="js/plugins/sigma.plugins.dragNodes/sigma.plugins.dragNodes.js"></script>-->
-<!--    &lt;!&ndash; &ndash;&gt;-->
+
 <!--    <script src="js/js/jquery.min.js"></script>-->
 <!--      <script src="js/js/sigma.layout.forceAtlas2.min.js"></script>-->
-<!--     &lt;!&ndash; <script src="js/main.js"></script>&ndash;&gt;-->
+<!--      <script src="js/main.js"></script>-->
 <!--    <script src="js/test.js"></script>-->
     <!-- SPRING IMPORTS -->
 
@@ -118,7 +118,7 @@
     <script src="../../static/js/src/misc/sigma.misc.bindDOMEvents.js"></script>
     <script src="../../static/js/src/misc/sigma.misc.drawHovers.js"></script>
 
-    <script src="../../static/js/plugins/sigma.renderers.parallelEdges/utils.js"></script>-->
+    <script src="../../static/js/plugins/sigma.renderers.parallelEdges/utils.js"></script>
     <script src="../../static/js/plugins/sigma.renderers.parallelEdges/sigma.canvas.edges.curve.js"></script>
     <script src="../../static/js/plugins/sigma.renderers.parallelEdges/sigma.canvas.edges.curvedArrow.js"></script>
     <script src="../../static/js/plugins/sigma.renderers.parallelEdges/sigma.canvas.edgehovers.curve.js"></script>
@@ -135,7 +135,11 @@
 
     <!-- TEST SIGMA SCRIPTS -->
 
-
+    <!--    video1: cat, funny,-->
+    <!--    video2: funny, dog-->
+    <!--    video3: sad, story-->
+    <!--    video4: cat, dog-->
+    <!--    video5: funny-->
 
 </head>
 <body>
@@ -147,46 +151,44 @@
         }
 
         body{
+            display: flex;
+            flex-direction: row;
             padding:1%;
             height:100vh;
             width:100%;
         }
 
         #input {
+            display: flex;
             display: block;
             width: 100%;
             height: 50%;
         }
 
         #text-container {
-            display: inline-block;
+            display: flex;
+            flex-direction: column;
             width: 20%;
             height: 100%;
             border:solid 1px #BDBDBD;
-            position: absolute;
         }
 
         #inputEdge {
+            display: flex;
             display: block;
             width: 100%;
-            height: 20%;
+            height: 5%;
         }
         #graph-container {
-            display: inline-block;
-            width: 70%;
+            display: flex;
+            width: 80%;
             height: 100%;
             border:solid 1px #BDBDBD;
-            position: absolute;
-            left: 250px
         }
     </style>
 <div id="text-container">
     <textarea id="input" spellcheck="false">
-    video1: cat, funny,
-    video2: funny, dog
-    video3: sad, story
-    video4: cat, dog
-    video5: funny
+Здесь будет задание
     </textarea>
     <textarea id="inputEdge"></textarea>
     <input type="button" id="subButton" value="Изменить"></p>
