@@ -135,8 +135,8 @@ $(document).ready(function() {
         settings: {
             doubleClickEnabled: false,
             minEdgeSize: 0.5,
-            maxEdgeSize: 4,
-            maxNodeSize: 16,
+            maxEdgeSize: 7,
+            maxNodeSize: 17,
             enableEdgeHovering: true,
             edgeHoverColor: 'edge',
             defaultEdgeHoverColor: '#000',
@@ -182,12 +182,25 @@ $(document).ready(function() {
     graph.bind('rightClickEdge', function(e) {
         console.log(e.data.edge.id);
         if (e.data.edge.isSelected) {
-            e.data.edge.color = "#000";
+            e.data.edge.color = '#ccc';
             e.data.edge.isSelected = false;
+            if (greenEdgeIds[0] == e.data.edge.id) {
+                greenEdgeIds[0] = null;
+            }
         } else {
             e.data.edge.color = "#0A0"; //зеленый
             e.data.edge.isSelected = true;
-            greenEdgeIds[0] = e.data.edge.id;
+            if (greenEdgeIds[0] == null) {
+                greenEdgeIds[0] = e.data.edge.id;
+            } else {
+                graph.graph.edges().forEach(function(edge) {
+                    if (edge.id != e.data.edge.id) {
+                        edge.color = '#ccc';
+                        edge.isSelected = false;
+                    }
+                });
+                greenEdgeIds[0] = e.data.edge.id;
+            }
         }
         graph.refresh();
     });
@@ -216,6 +229,9 @@ $(document).ready(function() {
                         hover_color: '#000',
                         type: "arrow"
                     });
+                }
+                if(existsEdge(e.data.node.id + "-" + redNodeIds[0])) {
+                    graph.graph.dropEdge(e.data.node.id + "-" + redNodeIds[0]);
                 }
                 graph.graph.nodes().forEach(function(node) {
                     if (node.id == e.data.node.id || node.id == redNodeIds[0]) {
@@ -330,7 +346,7 @@ $(document).ready(function() {
             }
             if (greenEdgeIds[0] != null) {
                 graph.graph.dropEdge(greenEdgeIds[0]);
-                greenEdgeIds = null;
+                greenEdgeIds[0] = null;
             }
             graph.refresh();
         }
