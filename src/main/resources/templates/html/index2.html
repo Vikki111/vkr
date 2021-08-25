@@ -189,9 +189,16 @@
 <div id="text-container">
     <textarea id="input" spellcheck="false">
 Здесь будет задание
+Управление:
+Добавление вершины: даблклик ЛКМ
+Добавление ребра: ПКМ по 1-й вершине, ПКМ по 2-й вершине
+Выделение вершины: ПКМ (отмена выделения ПКМ)
+Выделение ребра: ПКМ (отмена выделения ПКМ)
+Удаление вершины или ребра: выделение ПКМ и нажатие кнопки delete
+Добавление назавание ребру: выделение ребра и в специальном поле набор названия, после - клик по кнопке "Изменить название ребра"
     </textarea>
-    <textarea id="inputEdge"></textarea>
-    <input type="button" id="subButton" value="Изменить"></p>
+    <textarea placeholder="Название выбранного ребра" id="inputEdge"></textarea>
+    <input type="button" id="subButton" value="Изменить название ребра"></p>
     <input type="button" id="jsonButton" value="To JSON"></p>
 </div>
 <div id="graph-container">

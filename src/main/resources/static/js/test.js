@@ -136,7 +136,7 @@ $(document).ready(function() {
             doubleClickEnabled: false,
             minEdgeSize: 0.5,
             maxEdgeSize: 7,
-            maxNodeSize: 17,
+            maxNodeSize: 20,
             enableEdgeHovering: true,
             edgeHoverColor: 'edge',
             defaultEdgeHoverColor: '#000',
@@ -186,6 +186,7 @@ $(document).ready(function() {
             e.data.edge.isSelected = false;
             if (greenEdgeIds[0] == e.data.edge.id) {
                 greenEdgeIds[0] = null;
+                $('#inputEdge').val('');
             }
         } else {
             e.data.edge.color = "#0A0"; //зеленый
@@ -201,6 +202,7 @@ $(document).ready(function() {
                 });
                 greenEdgeIds[0] = e.data.edge.id;
             }
+            $('#inputEdge').val(e.data.edge.label);
         }
         graph.refresh();
     });
@@ -278,9 +280,18 @@ $(document).ready(function() {
 
     $('#subButton').click(function() {
         console.log($('#inputEdge').val());
-        edgeLabels[selectedEdgeId] = $('#inputEdge').val();
-        console.log(Object.keys(edgeLabels));
-        console.log(Object.values(edgeLabels));
+        if(greenEdgeIds[0] != null) {
+            graph.graph.edges().forEach(function(edge) {
+                if (edge.id == greenEdgeIds[0]) {
+                    edge.label = $('#inputEdge').val();
+                }
+            });
+        }
+        graph.refresh();
+
+//        edgeLabels[selectedEdgeId] = $('#inputEdge').val();
+//        console.log(Object.keys(edgeLabels));
+//        console.log(Object.values(edgeLabels));
     });
 
     $('#jsonButton').click(function() {
